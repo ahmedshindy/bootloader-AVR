@@ -1,0 +1,274 @@
+
+bootloader.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000162  00007000  00007000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000100  00800060  00007162  000001d6  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .stab         000006d8  00000000  00000000  000002d8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000cb5  00000000  00000000  000009b0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .comment      00000011  00000000  00000000  00001665  2**0
+                  CONTENTS, READONLY
+  5 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00001678  2**2
+                  CONTENTS, READONLY
+  6 .debug_info   0000052e  00000000  00000000  000016b4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 000004e7  00000000  00000000  00001be2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   0000001a  00000000  00000000  000020c9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000001af  00000000  00000000  000020e3  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00007000 <__vectors>:
+    7000:	0c 94 2a 38 	jmp	0x7054	; 0x7054 <__ctors_end>
+    7004:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7008:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    700c:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7010:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7014:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7018:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    701c:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7020:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7024:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7028:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    702c:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7030:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7034:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7038:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    703c:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7040:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7044:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7048:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    704c:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+    7050:	0c 94 3f 38 	jmp	0x707e	; 0x707e <__bad_interrupt>
+
+00007054 <__ctors_end>:
+    7054:	11 24       	eor	r1, r1
+    7056:	1f be       	out	0x3f, r1	; 63
+    7058:	cf e5       	ldi	r28, 0x5F	; 95
+    705a:	d4 e0       	ldi	r29, 0x04	; 4
+    705c:	de bf       	out	0x3e, r29	; 62
+    705e:	cd bf       	out	0x3d, r28	; 61
+
+00007060 <__do_copy_data>:
+    7060:	11 e0       	ldi	r17, 0x01	; 1
+    7062:	a0 e6       	ldi	r26, 0x60	; 96
+    7064:	b0 e0       	ldi	r27, 0x00	; 0
+    7066:	e2 e6       	ldi	r30, 0x62	; 98
+    7068:	f1 e7       	ldi	r31, 0x71	; 113
+    706a:	02 c0       	rjmp	.+4      	; 0x7070 <__do_copy_data+0x10>
+    706c:	05 90       	lpm	r0, Z+
+    706e:	0d 92       	st	X+, r0
+    7070:	a0 36       	cpi	r26, 0x60	; 96
+    7072:	b1 07       	cpc	r27, r17
+    7074:	d9 f7       	brne	.-10     	; 0x706c <__do_copy_data+0xc>
+    7076:	0e 94 8d 38 	call	0x711a	; 0x711a <main>
+    707a:	0c 94 af 38 	jmp	0x715e	; 0x715e <_exit>
+
+0000707e <__bad_interrupt>:
+    707e:	0c 94 00 38 	jmp	0x7000	; 0x7000 <__vectors>
+
+00007082 <boot_program_page>:
+
+#define CODE_SIZE  256
+#define NO_OF_PAGES  2
+
+void boot_program_page (uint16_t page, uint8_t *buf)
+{
+    7082:	cf 93       	push	r28
+    7084:	df 93       	push	r29
+	uint8_t sreg;
+	uint32_t address;
+	uint16_t word ;
+
+	// Disable interrupts.
+	sreg = SREG;
+    7086:	4f b7       	in	r20, 0x3f	; 63
+	cli();
+    7088:	f8 94       	cli
+	address = page * SPM_PAGESIZE ;
+    708a:	96 95       	lsr	r25
+    708c:	98 2f       	mov	r25, r24
+    708e:	88 27       	eor	r24, r24
+    7090:	97 95       	ror	r25
+    7092:	87 95       	ror	r24
+
+
+	boot_page_erase_safe (address);
+    7094:	07 b6       	in	r0, 0x37	; 55
+    7096:	00 fc       	sbrc	r0, 0
+    7098:	fd cf       	rjmp	.-6      	; 0x7094 <boot_program_page+0x12>
+    709a:	e1 99       	sbic	0x1c, 1	; 28
+    709c:	fe cf       	rjmp	.-4      	; 0x709a <boot_program_page+0x18>
+    709e:	23 e0       	ldi	r18, 0x03	; 3
+    70a0:	fc 01       	movw	r30, r24
+    70a2:	20 93 57 00 	sts	0x0057, r18	; 0x800057 <__TEXT_REGION_LENGTH__+0x7e0057>
+    70a6:	e8 95       	spm
+    70a8:	eb 01       	movw	r28, r22
+    70aa:	c0 58       	subi	r28, 0x80	; 128
+    70ac:	df 4f       	sbci	r29, 0xFF	; 255
+    70ae:	db 01       	movw	r26, r22
+	{
+		// Set up little Endian word.
+		word  = *buf++;
+		word += (*buf++) << 8;
+
+		boot_page_fill_safe(address + i, word);
+    70b0:	51 e0       	ldi	r21, 0x01	; 1
+    70b2:	bc 01       	movw	r22, r24
+    70b4:	6a 1b       	sub	r22, r26
+    70b6:	7b 0b       	sbc	r23, r27
+	boot_page_erase_safe (address);
+
+	for (i=0; i<SPM_PAGESIZE; i+=2)
+	{
+		// Set up little Endian word.
+		word  = *buf++;
+    70b8:	ec 91       	ld	r30, X
+		word += (*buf++) << 8;
+    70ba:	11 96       	adiw	r26, 0x01	; 1
+    70bc:	2c 91       	ld	r18, X
+    70be:	11 97       	sbiw	r26, 0x01	; 1
+    70c0:	30 e0       	ldi	r19, 0x00	; 0
+    70c2:	32 2f       	mov	r19, r18
+    70c4:	22 27       	eor	r18, r18
+    70c6:	2e 0f       	add	r18, r30
+    70c8:	31 1d       	adc	r19, r1
+
+		boot_page_fill_safe(address + i, word);
+    70ca:	07 b6       	in	r0, 0x37	; 55
+    70cc:	00 fc       	sbrc	r0, 0
+    70ce:	fd cf       	rjmp	.-6      	; 0x70ca <boot_program_page+0x48>
+    70d0:	e1 99       	sbic	0x1c, 1	; 28
+    70d2:	fe cf       	rjmp	.-4      	; 0x70d0 <boot_program_page+0x4e>
+    70d4:	fb 01       	movw	r30, r22
+    70d6:	ea 0f       	add	r30, r26
+    70d8:	fb 1f       	adc	r31, r27
+    70da:	09 01       	movw	r0, r18
+    70dc:	50 93 57 00 	sts	0x0057, r21	; 0x800057 <__TEXT_REGION_LENGTH__+0x7e0057>
+    70e0:	e8 95       	spm
+    70e2:	11 24       	eor	r1, r1
+    70e4:	12 96       	adiw	r26, 0x02	; 2
+	address = page * SPM_PAGESIZE ;
+
+
+	boot_page_erase_safe (address);
+
+	for (i=0; i<SPM_PAGESIZE; i+=2)
+    70e6:	ca 17       	cp	r28, r26
+    70e8:	db 07       	cpc	r29, r27
+    70ea:	31 f7       	brne	.-52     	; 0x70b8 <boot_program_page+0x36>
+		word += (*buf++) << 8;
+
+		boot_page_fill_safe(address + i, word);
+	}
+
+	boot_page_write_safe (address);     // Store buffer in flash page.
+    70ec:	07 b6       	in	r0, 0x37	; 55
+    70ee:	00 fc       	sbrc	r0, 0
+    70f0:	fd cf       	rjmp	.-6      	; 0x70ec <boot_program_page+0x6a>
+    70f2:	e1 99       	sbic	0x1c, 1	; 28
+    70f4:	fe cf       	rjmp	.-4      	; 0x70f2 <boot_program_page+0x70>
+    70f6:	25 e0       	ldi	r18, 0x05	; 5
+    70f8:	fc 01       	movw	r30, r24
+    70fa:	20 93 57 00 	sts	0x0057, r18	; 0x800057 <__TEXT_REGION_LENGTH__+0x7e0057>
+    70fe:	e8 95       	spm
+
+	// Reenable RWW-section again. We need this if we want to jump back
+	// to the application after bootloading.
+
+	boot_rww_enable_safe();
+    7100:	07 b6       	in	r0, 0x37	; 55
+    7102:	00 fc       	sbrc	r0, 0
+    7104:	fd cf       	rjmp	.-6      	; 0x7100 <boot_program_page+0x7e>
+    7106:	e1 99       	sbic	0x1c, 1	; 28
+    7108:	fe cf       	rjmp	.-4      	; 0x7106 <boot_program_page+0x84>
+    710a:	81 e1       	ldi	r24, 0x11	; 17
+    710c:	80 93 57 00 	sts	0x0057, r24	; 0x800057 <__TEXT_REGION_LENGTH__+0x7e0057>
+    7110:	e8 95       	spm
+
+	// Re-enable interrupts (if they were ever enabled).
+
+	SREG = sreg;
+    7112:	4f bf       	out	0x3f, r20	; 63
+}
+    7114:	df 91       	pop	r29
+    7116:	cf 91       	pop	r28
+    7118:	08 95       	ret
+
+0000711a <main>:
+{
+
+	uint8_t  i , pageNo ;
+
+	/*Blink a Led to indicate the BLD SW */
+	DDRD |= 1 << PD0;
+    711a:	88 9a       	sbi	0x11, 0	; 17
+    711c:	83 e0       	ldi	r24, 0x03	; 3
+	for(i = 0 ; i < 3 ; i++)
+	{
+		PORTD ^= (1 << PD0);
+    711e:	21 e0       	ldi	r18, 0x01	; 1
+    7120:	92 b3       	in	r25, 0x12	; 18
+    7122:	92 27       	eor	r25, r18
+    7124:	92 bb       	out	0x12, r25	; 18
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+    7126:	3f ef       	ldi	r19, 0xFF	; 255
+    7128:	49 e6       	ldi	r20, 0x69	; 105
+    712a:	98 e1       	ldi	r25, 0x18	; 24
+    712c:	31 50       	subi	r19, 0x01	; 1
+    712e:	40 40       	sbci	r20, 0x00	; 0
+    7130:	90 40       	sbci	r25, 0x00	; 0
+    7132:	e1 f7       	brne	.-8      	; 0x712c <main+0x12>
+    7134:	00 c0       	rjmp	.+0      	; 0x7136 <main+0x1c>
+    7136:	00 00       	nop
+    7138:	81 50       	subi	r24, 0x01	; 1
+
+	uint8_t  i , pageNo ;
+
+	/*Blink a Led to indicate the BLD SW */
+	DDRD |= 1 << PD0;
+	for(i = 0 ; i < 3 ; i++)
+    713a:	91 f7       	brne	.-28     	; 0x7120 <main+0x6>
+
+
+	//start at flash_start = 0x0000
+	for(pageNo = 0 ; pageNo < NO_OF_PAGES ; pageNo++)
+	{
+		boot_program_page( pageNo, &App_Code[SPM_PAGESIZE*pageNo]);
+    713c:	60 e6       	ldi	r22, 0x60	; 96
+    713e:	70 e0       	ldi	r23, 0x00	; 0
+    7140:	80 e0       	ldi	r24, 0x00	; 0
+    7142:	90 e0       	ldi	r25, 0x00	; 0
+    7144:	0e 94 41 38 	call	0x7082	; 0x7082 <boot_program_page>
+    7148:	60 ee       	ldi	r22, 0xE0	; 224
+    714a:	70 e0       	ldi	r23, 0x00	; 0
+    714c:	81 e0       	ldi	r24, 0x01	; 1
+    714e:	90 e0       	ldi	r25, 0x00	; 0
+    7150:	0e 94 41 38 	call	0x7082	; 0x7082 <boot_program_page>
+	}
+	//start the actual program
+	asm("jmp 0");
+    7154:	0c 94 00 00 	jmp	0	; 0x0 <__TEXT_REGION_ORIGIN__>
+}
+    7158:	80 e0       	ldi	r24, 0x00	; 0
+    715a:	90 e0       	ldi	r25, 0x00	; 0
+    715c:	08 95       	ret
+
+0000715e <_exit>:
+    715e:	f8 94       	cli
+
+00007160 <__stop_program>:
+    7160:	ff cf       	rjmp	.-2      	; 0x7160 <__stop_program>
